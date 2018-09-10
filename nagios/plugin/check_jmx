@@ -3,4 +3,24 @@
 # Nagios plugin to monitor Java JMX (http://java.sun.com/jmx)attributes.
 #
 RDIR=`dirname $0`
-java -cp $RDIR/jmxquery.jar org.nagios.JMXQuery "$@"
+comm=`java -cp $RDIR/jmxquery.jar org.nagios.JMXQuery "$@"`
+arr=($comm)
+if [ "${arr[1]}" == "OK" ];
+then
+	echo ${arr[0]} ${arr[1]} "-" ${arr[2]} "|"${arr[2]}
+	exit 0
+elif [ "${arr[1]}" == "WARNING" ];
+then
+	echo ${arr[0]} ${arr[1]} "-" ${arr[2]} "|"${arr[2]}
+        exit 1
+elif [ "${arr[1]}" == "CRITICAL" ];
+then
+        echo ${arr[0]} ${arr[1]} "-" ${arr[2]} "|"${arr[2]}
+        exit 2
+elif [ "${arr[1]}" == "UNKNOWN" ];
+then
+        echo ${arr[0]} ${arr[1]} "-" ${arr[2]}
+        exit 3
+
+fi
+
